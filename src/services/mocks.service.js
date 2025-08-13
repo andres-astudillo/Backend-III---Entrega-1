@@ -8,11 +8,9 @@ export class MocksService {
     this.petsSvc = petsSvc;
   }
 
-  // Solo memoria (para /mockingusers y /mockingpets)
   generateUsersInMemory(n = 50) { return generateMockUsers(n); }
   generatePetsInMemory(n = 50) { return generateMockPets(n); }
 
-  // Inserción real (para /generateData)
   async generateAndInsert({ users = 0, pets = 0 }) {
     let createdUsers = [];
     if (users > 0) createdUsers = await this.usersSvc.createManyFromMocks(users);
