@@ -23,10 +23,6 @@ export const getMockedPets = (count) => {
     name: fa.animal.dog(),
     specie: fa.animal.type(),
     birthDate: fa.date.past(),
-    // owner: {
-    //   id: fa.number.int({ min: 1000000, max: 9999999 }),
-    //   name: fa.person.firstName(),
-    // },
     image: fa.image.animal,
   }));
 };
