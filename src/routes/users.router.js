@@ -1,6 +1,13 @@
-import { Router } from "express";
-import { listUsers, countUsers } from "../controllers/users.controller.js";
+import { Router } from 'express';
+import usersController from '../controllers/users.controller.js';
+
 const router = Router();
-router.get("/", listUsers);
-router.get("/count", countUsers);
+
+router.get('/',usersController.getAllUsers);
+
+router.get('/:uid',usersController.getUser);
+router.put('/:uid',usersController.updateUser);
+router.delete('/:uid',usersController.deleteUser);
+
+
 export default router;

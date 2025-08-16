@@ -1,7 +1,27 @@
-import { PetModel } from "../models/pet.model.js";
+import petModel from "./models/Pet.js";
 
-export class PetsDAO {
-  createMany(docs) { return PetModel.insertMany(docs, { ordered: false }); }
-  findAll() { return PetModel.find({}, "name type adopted owner").lean(); }
-  count() { return PetModel.countDocuments(); }
+export default class Pet {
+  get = (params) => {
+    return petModel.find(params);
+  };
+
+  getBy = (params) => {
+    return petModel.findOne(params);
+  };
+
+  save = (doc) => {
+    return petModel.create(doc);
+  };
+
+  createMany = (data) => {
+    return petModel.insertMany(data);
+  };
+
+  update = (id, doc) => {
+    return petModel.findByIdAndUpdate(id, { $set: doc });
+  };
+
+  delete = (id) => {
+    return petModel.findByIdAndDelete(id);
+  };
 }

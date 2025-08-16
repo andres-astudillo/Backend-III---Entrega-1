@@ -1,24 +1,42 @@
-import { MocksService } from "../services/mocks.service.js";
-const svc = new MocksService();
+import { fakerES as fa } from "@faker-js/faker";
+import { createHash } from "../utils/hash.js";
+import { usersService, petsService } from "../services/index.js";
 
-export const mockingPets = (req, res) => {
-  const n = Number(req.query.n ?? 50);
-  if (!Number.isFinite(n) || n <= 0) return res.status(400).json({ error: "n inválido" });
-  res.json({ status: "success", payload: svc.generatePetsInMemory(n) });
+export const getMockedUsers = (count) => {
+  const first_name = fa.person.firstName();
+  const last_name = fa.person.lastName();
+  return Array.from({ length: count }, () => ({
+    first_name,
+    last_name,
+    email: fa.internet.email({
+        firstName: first_name,
+        lastName: last_name
+    }),
+    password: createHash("coder123"),
+    role: fa.helpers.arrayElement(["user", "admin"]),
+    pets: [],
+  }));
 };
 
-export const mockingUsers = (_req, res) => {
-  res.json({ status: "success", payload: svc.generateUsersInMemory(50) });
+export const getMockedPets = (count) => {
+  return Array.from({ length: count }, () => ({
+    name: fa.animal.dog(),
+    specie: fa.animal.type(),
+    birthDate: fa.date.past(),
+    // owner: {
+    //   id: fa.number.int({ min: 1000000, max: 9999999 }),
+    //   name: fa.person.firstName(),
+    // },
+    image: fa.image.animal,
+  }));
 };
 
-export const generateData = async (req, res) => {
-  try {
-    const users = Number(req.body.users ?? 0);
-    const pets = Number(req.body.pets ?? 0);
-    if (!Number.isFinite(users) || users < 0) return res.status(400).json({ error: "users inválido" });
-    if (!Number.isFinite(pets) || pets < 0) return res.status(400).json({ error: "pets inválido" });
+export const postGenerateData = async (countUsers, countPets) => {
+  const generatedUsers = getMockedUsers(countUsers);
+  const generatedPets = getMockedPets(countPets);
 
-    const inserted = await svc.generateAndInsert({ users, pets });
-    res.status(201).json({ status: "success", inserted });
-  } catch (e) { res.status(500).json({ status: "error", error: e.message }); }
+  await usersService.createMany(generatedUsers);
+  await petsService.createMany(generatedPets);
+
+  return { users: generatedUsers, pets: generatedPets };
 };

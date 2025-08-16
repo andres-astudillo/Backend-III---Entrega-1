@@ -1,7 +1,27 @@
-import { UserModel } from "../models/user.model.js";
+import userModel from "./models/User.js";
 
-export class UsersDAO {
-  createMany(docs) { return UserModel.insertMany(docs, { ordered: false }); }
-  findAll() { return UserModel.find({}, "first_name last_name email role pets").lean(); }
-  count() { return UserModel.countDocuments(); }
+export default class Users {
+  get = (params) => {
+    return userModel.find(params);
+  };
+
+  getBy = (params) => {
+    return userModel.findOne(params);
+  };
+
+  save = (doc) => {
+    return userModel.create(doc);
+  };
+
+  createMany = (data) => {
+    return userModel.insertMany(data);
+  };
+
+  update = (id, doc) => {
+    return userModel.findByIdAndUpdate(id, { $set: doc });
+  };
+
+  delete = (id) => {
+    return userModel.findByIdAndDelete(id);
+  };
 }
